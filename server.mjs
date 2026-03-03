@@ -1,6 +1,6 @@
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
-import { extname, join, normalize, dirname } from "node:path";
+import { extname, join, normalize, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const PORT = Number(process.env.PORT || 3000);
@@ -1462,7 +1462,13 @@ async function handleAPI(response, url) {
 }
 
 function parseRequestUrl(request) {
-  return new URL(request.url || "/", `http://${HOST}:${PORT}`);
+  const forwardedProto = String(request.headers["x-forwarded-proto"] ?? "")
+    .split(",")
+    .map((value) => value.trim())
+    .find(Boolean);
+  const protocol = forwardedProto || "http";
+  const host = request.headers.host || `${HOST}:${PORT}`;
+  return new URL(request.url || "/", `${protocol}://${host}`);
 }
 
 async function serveStatic(response, url) {
@@ -1490,7 +1496,7 @@ async function serveStatic(response, url) {
   }
 }
 
-const server = createServer(async (request, response) => {
+export async function handleRequest(request, response) {
   let url;
   try {
     url = parseRequestUrl(request);
@@ -1527,8 +1533,15 @@ const server = createServer(async (request, response) => {
   }
 
   await serveStatic(response, url);
-});
+}
 
-server.listen(PORT, HOST, () => {
-  console.log(`KOSPI dashboard server is running on http://${HOST}:${PORT}`);
-});
+export default handleRequest;
+
+const isDirectRun = Boolean(process.argv[1]) && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+
+if (isDirectRun) {
+  const server = createServer(handleRequest);
+  server.listen(PORT, HOST, () => {
+    console.log(`KOSPI dashboard server is running on http://${HOST}:${PORT}`);
+  });
+}
