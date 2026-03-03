@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KOSPI 실시간 주식 인텔리전스 대시보드</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="bg-grid" aria-hidden="true"></div>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">KRX / KOSPI LIVE</p>
+          <h1>KOSPI 실시간 주식 정보 대시보드</h1>
+          <p class="subtitle">
+            실시간 시세, 금융지표, 국내외 뉴스, 시장 상황, 라이브 방송을 패널 단위로 통합 제공합니다.
+          </p>
+        </div>
+        <form id="symbol-form" class="symbol-form">
+          <label for="symbol-input">종목 입력 (예: 005930, 000660, 삼성전자)</label>
+          <div class="symbol-row">
+            <div class="symbol-input-wrap">
+              <input
+                id="symbol-input"
+                type="text"
+                value="005930"
+                autocomplete="off"
+                spellcheck="false"
+                aria-autocomplete="list"
+                aria-controls="symbol-suggestions"
+              />
+              <ul id="symbol-suggestions" class="symbol-suggestions" role="listbox" hidden></ul>
+            </div>
+            <button type="submit">조회</button>
+          </div>
+          <p class="symbol-meta">
+            현재 대상: <strong id="current-stock">005930.KS</strong>
+            <span id="connection-status">초기화 중...</span>
+          </p>
+          <div class="symbol-actions">
+            <button id="reset-layout-btn" type="button" class="ghost-btn">레이아웃 초기화</button>
+          </div>
+        </form>
+      </header>
+
+      <section id="panels" class="panel-grid" aria-live="polite"></section>
+    </main>
+
+    <template id="panel-template">
+      <details class="panel" open>
+        <summary>
+          <div class="panel-heading-row">
+            <span class="drag-handle" title="드래그하여 위치 변경" aria-label="드래그 핸들">⋮⋮</span>
+            <div class="panel-heading">
+              <h2></h2>
+              <p class="panel-caption"></p>
+            </div>
+          </div>
+        </summary>
+        <div class="panel-body">
+          <div class="panel-meta"></div>
+          <div class="panel-content"></div>
+        </div>
+      </details>
+    </template>
+
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "name": "sdashboard",
+  "version": "1.0.0",
+  "private": true,
+  "description": "KOSPI real-time stock intelligence dashboard",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "dev": "HOST=0.0.0.0 node --watch server.mjs"
+  }
+}
